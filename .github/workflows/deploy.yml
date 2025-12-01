@@ -1,0 +1,55 @@
+name: Deploy to AWS Elastic Beanstalk
+
+on:
+  push:
+    branches:
+      - main # Branch de Produção
+      - dev # Branch de Homologação
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Build Application
+        run: npm run build
+
+      - name: Generate Deployment Package
+        # Cria um ZIP com o código compilado (dist), package.json e configs
+        # Se você tiver arquivo .env ou outros configs, inclua aqui
+        run: zip -r deploy.zip dist package.json src
+
+      - name: Deploy to HOMOL
+        if: github.ref == 'refs/heads/dev' # <--- Condição ajustada para a branch 'dev'
+        uses: einaregilsson/beanstalk-deploy@v21
+        with:
+          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          application_name: teste-bilion
+          environment_name: teste-bilion-homol
+          version_label: "homol-${{ github.run_number }}"
+          region: us-east-2
+          deployment_package: deploy.zip
+
+      - name: Deploy to PROD
+        if: github.ref == 'refs/heads/main'
+        uses: einaregilsson/beanstalk-deploy@v21
+        with:
+          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          application_name: teste-bilion
+          environment_name: teste-bilion-prod
+          version_label: "prod-${{ github.run_number }}"
+          region: us-east-2
+          deployment_package: deploy.zip
