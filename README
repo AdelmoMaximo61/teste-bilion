@@ -4,7 +4,7 @@ Este projeto é uma API RESTful desenvolvida em **Node.js com TypeScript**, cria
 
 O objetivo principal é demonstrar a capacidade de criar ambientes isolados de **Homologação** e **Produção** utilizando infraestrutura em nuvem (**AWS**) e esteira de CI/CD.
 
-## 🚀 Tecnologias Utilizadas
+## Tecnologias Utilizadas
 
 - **Linguagem:** Node.js + TypeScript
 - **Framework:** Express
@@ -14,7 +14,7 @@ O objetivo principal é demonstrar a capacidade de criar ambientes isolados de *
 
 ---
 
-## ☁️ Como foi feito o Deploy
+## Como foi feito o Deploy
 
 O deploy é totalmente automatizado utilizando **GitHub Actions**. Foi criado um fluxo de Integração Contínua (CI/CD) que observa as branches do repositório e dispara a atualização para o ambiente correspondente na AWS Elastic Beanstalk.
 
@@ -27,7 +27,7 @@ O deploy é totalmente automatizado utilizando **GitHub Actions**. Foi criado um
 
 ---
 
-## 🔐 Onde estão as Variáveis de Ambiente
+## Onde estão as Variáveis de Ambiente
 
 Para garantir a segurança e seguir as boas práticas (12-Factor App), as variáveis de ambiente **não estão no código**. Elas foram configuradas diretamente no console da AWS.
 
@@ -40,7 +40,7 @@ A aplicação lê essa variável (`process.env.ENV_NAME`) para identificar em qu
 
 ---
 
-## 🛡️ Garantia da Separação entre Ambientes
+## Garantia da Separação entre Ambientes
 
 A separação é garantida em **nível de infraestrutura**:
 
@@ -49,14 +49,14 @@ A separação é garantida em **nível de infraestrutura**:
 
 ---
 
-## 🧪 Como Testar os Endpoints
+## Como Testar os Endpoints
 
-> **⚠️ OBSERVAÇÃO IMPORTANTE:**
+> **OBSERVAÇÃO IMPORTANTE:**
 > A funcionalidade completa de separação de ambientes (variáveis `homol`/`prod`) depende da infraestrutura da AWS. **Para validar o teste, utilize exclusivamente as URLs da nuvem listadas abaixo.** A execução local serve apenas para desenvolvimento e retornará `env: local`.
 
 Abaixo estão as URLs públicas e exemplos de comandos `curl` para validar o funcionamento e o isolamento dos ambientes.
 
-### 🔗 URLs dos Ambientes
+### URLs dos Ambientes
 
 - **Homologação (HOMOL):** [http://teste-bilion-homol.eba-xhuvb2ie.us-east-2.elasticbeanstalk.com](http://teste-bilion-homol.eba-xhuvb2ie.us-east-2.elasticbeanstalk.com)
 - **Produção (PROD):** [http://teste-bilion-prod.eba-xhuvb2ie.us-east-2.elasticbeanstalk.com](http://teste-bilion-prod.eba-xhuvb2ie.us-east-2.elasticbeanstalk.com)
@@ -79,7 +79,7 @@ curl -X POST [http://teste-bilion-homol.eba-xhuvb2ie.us-east-2.elasticbeanstalk.
 -d '{"name": "Usuario Homol", "email": "teste@homol.com"}'
 ```
 
-## 🛠️ Instalação Local (Para Desenvolvimento)
+## Instalação Local (Para Desenvolvimento)
 
 Caso queira rodar o projeto localmente:
 
