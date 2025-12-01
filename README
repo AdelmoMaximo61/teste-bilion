@@ -1,0 +1,103 @@
+# Teste Técnico Bilion - Backend Developer (PL)
+
+Este projeto é uma API RESTful desenvolvida em **Node.js com TypeScript**, criada para atender aos requisitos do teste técnico para a vaga de Desenvolvedor PL.
+
+O objetivo principal é demonstrar a capacidade de criar ambientes isolados de **Homologação** e **Produção** utilizando infraestrutura em nuvem (**AWS**) e esteira de CI/CD.
+
+## 🚀 Tecnologias Utilizadas
+
+- **Linguagem:** Node.js + TypeScript
+- **Framework:** Express
+- **Infraestrutura:** AWS Elastic Beanstalk (PaaS)
+- **CI/CD:** GitHub Actions
+- **Isolamento de Dados:** Armazenamento em memória volátil (isolado por instância).
+
+---
+
+## ☁️ Como foi feito o Deploy
+
+O deploy é totalmente automatizado utilizando **GitHub Actions**. Foi criado um fluxo de Integração Contínua (CI/CD) que observa as branches do repositório e dispara a atualização para o ambiente correspondente na AWS Elastic Beanstalk.
+
+**Estratégia de Branches:**
+
+1. **Branch `dev` → Ambiente de Homologação (HOMOL)**
+   - Ao dar push na branch `dev`, o pipeline constrói o projeto e faz o deploy na URL de homologação.
+2. **Branch `main` → Ambiente de Produção (PROD)**
+   - Ao dar push ou merge na branch `main`, o pipeline constrói o projeto e faz o deploy na URL de produção.
+
+---
+
+## 🔐 Onde estão as Variáveis de Ambiente
+
+Para garantir a segurança e seguir as boas práticas (12-Factor App), as variáveis de ambiente **não estão no código**. Elas foram configuradas diretamente no console da AWS.
+
+- **Localização:** Painel AWS Elastic Beanstalk > Configuration > Updates, monitoring, and logging > Environment properties.
+- **Variável configurada:** `ENV_NAME`
+  - Valor em Homologação: `homol`
+  - Valor em Produção: `prod`
+
+A aplicação lê essa variável (`process.env.ENV_NAME`) para identificar em qual ambiente está rodando e separar logicamente as respostas da API.
+
+---
+
+## 🛡️ Garantia da Separação entre Ambientes
+
+A separação é garantida em **nível de infraestrutura**:
+
+1. **Instâncias Diferentes:** Existem dois ambientes distintos criados no Elastic Beanstalk (`teste-bilion-homol` e `teste-bilion-prod`). Cada um roda em sua própria instância EC2 (Servidor Virtual).
+2. **Memória Isolada:** Como a persistência de dados deste teste é feita em memória (array local no Node.js), e os processos rodam em servidores físicos/virtuais diferentes, é **impossível** que um dado inserido em Homologação apareça em Produção. Eles não compartilham memória nem banco de dados.
+
+---
+
+## 🧪 Como Testar os Endpoints
+
+> **⚠️ OBSERVAÇÃO IMPORTANTE:**
+> A funcionalidade completa de separação de ambientes (variáveis `homol`/`prod`) depende da infraestrutura da AWS. **Para validar o teste, utilize exclusivamente as URLs da nuvem listadas abaixo.** A execução local serve apenas para desenvolvimento e retornará `env: local`.
+
+Abaixo estão as URLs públicas e exemplos de comandos `curl` para validar o funcionamento e o isolamento dos ambientes.
+
+### 🔗 URLs dos Ambientes
+
+- **Homologação (HOMOL):** [http://teste-bilion-homol.eba-xhuvb2ie.us-east-2.elasticbeanstalk.com](http://teste-bilion-homol.eba-xhuvb2ie.us-east-2.elasticbeanstalk.com)
+- **Produção (PROD):** [http://teste-bilion-prod.eba-xhuvb2ie.us-east-2.elasticbeanstalk.com](http://teste-bilion-prod.eba-xhuvb2ie.us-east-2.elasticbeanstalk.com)
+
+### Exemplos de Teste (Copie e cole no terminal)
+
+#### 1. Criar Usuário em PRODUÇÃO
+
+```bash
+curl -X POST [http://teste-bilion-prod.eba-xhuvb2ie.us-east-2.elasticbeanstalk.com/user](http://teste-bilion-prod.eba-xhuvb2ie.us-east-2.elasticbeanstalk.com/user) \
+-H "Content-Type: application/json" \
+-d '{"name": "Usuario Prod", "email": "admin@producao.com"}'
+```
+
+#### 1. Criar Usuário em HOMOL
+
+```bash
+curl -X POST [http://teste-bilion-homol.eba-xhuvb2ie.us-east-2.elasticbeanstalk.com/user](http://teste-bilion-homol.eba-xhuvb2ie.us-east-2.elasticbeanstalk.com/user) \
+-H "Content-Type: application/json" \
+-d '{"name": "Usuario Homol", "email": "teste@homol.com"}'
+```
+
+## 🛠️ Instalação Local (Para Desenvolvimento)
+
+Caso queira rodar o projeto localmente:
+
+1. **Clone o repositório:**
+
+```bash
+   git clone [https://github.com/AdelmoMaximo61/teste-bilion.git](https://github.com/AdelmoMaximo61/teste-bilion.git)
+   cd teste-bilion
+```
+
+## Instale as dependências:
+
+```bash
+npm install
+```
+
+## Execute o servidor:
+
+```bash
+npm run dev
+```
