@@ -26,12 +26,10 @@ jobs:
         run: npm run build
 
       - name: Generate Deployment Package
-        # Cria um ZIP com o código compilado (dist), package.json e configs
-        # Se você tiver arquivo .env ou outros configs, inclua aqui
         run: zip -r deploy.zip dist package.json src
 
       - name: Deploy to HOMOL
-        if: github.ref == 'refs/heads/dev' # <--- Condição ajustada para a branch 'dev'
+        if: github.ref == 'refs/heads/dev'
         uses: einaregilsson/beanstalk-deploy@v21
         with:
           aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
